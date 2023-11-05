@@ -1,2 +1,6 @@
 venv/
 .idea/
+ecommerce/__pycache__/
+product/migrations/
+product/__pycache__/
+.env
