@@ -1,8 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from .models import Product
-from .serializers import ProductSerializer
+from rest_framework import generics
+from .models import Product, Category
+from .serializers import ProductSerializer, CategorySerializer
 
 
 @api_view(['GET', 'POST'])
@@ -21,9 +21,9 @@ def product_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-def product_detail(request, id):
+def product_detail(request, pk):
     try:
-        product = Product.objects.get(pk=id)
+        product = Product.objects.get(id=pk)
     except Product.DoesNotExist:
         return Response(status=404)
 
@@ -42,3 +42,12 @@ def product_detail(request, id):
         product.delete()
         return Response(status=204)
 
+
+class CategoryListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+
+class CategoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
