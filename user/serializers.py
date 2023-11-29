@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 from .models import SellerProfile, CustomerProfile
 
 
@@ -59,9 +58,5 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             CustomerProfile.objects.create(user=user)
         elif role == 'seller':
             SellerProfile.objects.create(user=user)
-
-        # token, created = Token.objects.get_or_create(user=user)
-
-        # validated_data['token'] = token.key
 
         return user
