@@ -1,11 +1,14 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import generics
 from .models import Product, Category
 from .serializers import ProductSerializer, CategorySerializer
+from rest_framework.permissions import IsAuthenticated
+from user.permissions import IsCustomer, IsShopOwner
 
 
 @api_view(['GET', 'POST'])
+@permission_classes([IsCustomer|IsShopOwner])
 def product_list(request):
     if request.method == 'GET':
         products = Product.objects.all()
@@ -21,6 +24,7 @@ def product_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsShopOwner, IsCustomer])
 def product_detail(request, pk):
     try:
         product = Product.objects.get(id=pk)
@@ -44,10 +48,12 @@ def product_detail(request, pk):
 
 
 class CategoryListCreateAPIView(generics.ListCreateAPIView):
+    permission_classes = [IsCustomer]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
 
 class CategoryDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsCustomer]
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
